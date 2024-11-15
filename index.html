@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сканер штрихкодов</title>
+    <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script> <!-- библиотека для сканирования штрихкодов -->
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #scanner { width: 100%; max-width: 600px; }
+        #product-info { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Сканер штрихкодов</h1>
+
+    <div>
+        <video id="scanner" width="100%" height="auto" style="border: 1px solid #000;"></video>
+    </div>
+    
+    <div id="product-info">
+        <h2>Информация о товаре</h2>
+        <p id="product-name">Название товара: —</p>
+        <p id="product-price">Цена: —</p>
+        <p id="product-stock">Остаток: —</p>
+        <img id="product-image" src="" alt="Фото товара" style="max-width: 200px; margin-top: 10px;">
+    </div>
+
+    <script>
+        const codeReader = new ZXing.BrowserMultiFormatReader(); // создаем объект для сканирования штрихкодов
+        const videoElement = document.getElementById('scanner');
+        const productName = document.getElementById('product-name');
+        const productPrice = document.getElementById('product-price');
+        const productStock = document.getElementById('product-stock');
+        const productImage = document.getElementById('product-image');
+
+        // Массив с товарами (для примера)
+        const products = [
+            { barcode: "123456", name: "Товар 1", price: "100", stock: "50", image: "https://via.placeholder.com/150" },
+            { barcode: "789012", name: "Товар 2", price: "200", stock: "30", image: "https://via.placeholder.com/150" },
+            // Добавьте больше товаров сюда
+        ];
+
+        // Функция для отображения информации о товаре
+        function displayProductInfo(barcode) {
+            const product = products.find(item => item.barcode === barcode);
+            if (product) {
+                productName.textContent = `Название товара: ${product.name}`;
+                productPrice.textContent = Цена: ${product.price};
+                productStock.textContent = Остаток: ${product.stock};
+                productImage.src = product.image;
+            } else {
+                productName.textContent = "Товар не найден";
+                productPrice.textContent = "Цена: —";
+                productStock.textContent = "Остаток: —";
+                productImage.src = "";
+            }
+        }
+
+        // Начало сканирования
+        codeReader.decodeFromVideoDevice(null, videoElement, (result, err) => {
+            if (result) {
+                console.log(result.text); // выводим штрихкод
+                displayProductInfo(result.text); // отображаем информацию о товаре
+            }
+            if (err && !(err instanceof ZXing.NotFoundException)) {
+                console.error(err);
+            }
+        });
+
+    </script>
+
+</body>
+</html>
